@@ -174,29 +174,42 @@ class CLCSFast {
 		// for (int i = 0; i <= m; i++) {
 		// 	backtrace[i][0] = 'u';
 		// }
-		clearTable(mid, m, n, upperPath, lowerPath);
+		// clearTable(mid, m, n, upperPath, lowerPath);
+		// arr[1][0] = 0;
+		// arr[0][1] = 0;
+		// arr[0][0] = 0;
 		//System.err.println(arr[mid+1][1]);
 		
 		for (int i = 1; i <= m; i++) {
 			int j = upperPath.firstInRow(mid, i);
 			while (j <= lowerPath.lastInRow(mid, i)) {
+				int curr = -1;
+				char currdir = 'p';
 				// System.err.println("i " + i);
-				// System.err.println("j " + j);
+				// System.err.println("j " + j + " going until " + lowerPath.lastInRow(mid,i));
 				if (inBounds(upperPath, lowerPath, mid, i-1, j)) {
-					arr[i][j] = arr[i-1][j];
-					backtrace[i][j] = 'u';
+					curr = arr[i-1][j];
+					currdir = 'u';
+					// arr[i][j] = arr[i-1][j];
+					// backtrace[i][j] = 'u';
 					// System.err.println("UP");
 				}
-				if (inBounds(upperPath, lowerPath, mid, i, j-1) && arr[i][j-1] >= arr[i-1][j]) {
-					arr[i][j] = arr[i][j-1];
-					backtrace[i][j] = 'l';	
+				if (inBounds(upperPath, lowerPath, mid, i, j-1) && arr[i][j-1] >= curr) {
+					curr = arr[i][j-1];
+					currdir = 'l';
+					// arr[i][j] = arr[i][j-1];
+					// backtrace[i][j] = 'l';	
 					// System.err.println("LEFT");
 				} 
-				if (inBounds(upperPath, lowerPath, mid, i-1, j-1) && A[(i+mid-2)%m] == B[j-1] && arr[i-1][j-1]+1 > arr[i][j]) {
-					arr[i][j] = arr[i-1][j-1]+1;
-					backtrace[i][j] = 'd';	
+				if (inBounds(upperPath, lowerPath, mid, i-1, j-1) && A[(i+mid-2)%m] == B[j-1] && arr[i-1][j-1]+1 > curr) {
+					curr = arr[i-1][j-1] + 1;
+					currdir = 'd';
+					// arr[i][j] = arr[i-1][j-1]+1;
+					// backtrace[i][j] = 'd';	
 					// System.err.println("DIAG");
 				}
+				arr[i][j] = curr;
+				backtrace[i][j] = currdir;
 				j++;
 				// System.err.println("i: "  + i);
 				// System.err.println("J: " + j);
@@ -249,25 +262,40 @@ class CLCSFast {
 		System.out.println(max);
 	}
 	
-	private static void clearTable(int mid, int m, int n, Path upper, Path lower) {
-		for (int i = 1; i <= m; i++) {
-			for (int j=1; j <= n; j++){
-//			int j = upper.firstInRow(i);
-//			while (j <= lower.lastInRow(i)) {
-				arr[i][j] = 0;
-//				arr[i-1][j] = 0;
-//				arr[i][j-1] = 0;
-//				arr[i-1][j-1] = 0;
-//				try{
-//					arr[i][j] = 0;
-//				} catch(Exception e) {
-//					System.err.println(upper.minRow);
-//					System.err.println(lower.maxRow);
-//				}
-//				j++;
-			}
-		}	
-	}
+	// private static void clearTable(int mid, int m, int n, Path upper, Path lower) {
+	// 	for (int i = 1; i <= m; i++) {
+	// 		int j = upper.firstInRow(mid, i);
+	// 		while (j <= lower.lastInRow(mid, i)) {
+
+	// 			arr[i][j] = 0;
+
+	// 			j++;
+	// 		}
+	// 	}
+	// }
+
+
+
+
+
+// 		for (int i = 1; i <= m; i++) {
+// 			for (int j=1; j <= n; j++){
+// //			int j = upper.firstInRow(i);
+// //			while (j <= lower.lastInRow(i)) {
+// 				arr[i][j] = 0;
+// //				arr[i-1][j] = 0;
+// //				arr[i][j-1] = 0;
+// //				arr[i-1][j-1] = 0;
+// //				try{
+// //					arr[i][j] = 0;
+// //				} catch(Exception e) {
+// //					System.err.println(upper.minRow);
+// //					System.err.println(lower.maxRow);
+// //				}
+// //				j++;
+// 			}
+		// }	
+	// }
 	
 	public static void main(String[] args) {
 		Scanner s = new Scanner(System.in);
