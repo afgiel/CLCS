@@ -7,8 +7,6 @@ class CLCSFast {
 		public int start;
 		public int m;  
 		public int n;
-		public int[] max;
-		public int[] min;
 		public int[] maxRow;
 		public int[] minRow;
 		
@@ -16,12 +14,6 @@ class CLCSFast {
 			this.start = start;
 			this.m = m;
 			this.n = n;
-			max = new int[n+1];
-			min = new int[n+1];
-			for (int i = 0; i <= n; i++) {
-				min[i] = -1;
-				max[i] = -1;
-			}
 			maxRow = new int[m+1];
 			minRow = new int[m+1];
 			for (int i = 0; i <= m; i++) {
@@ -31,12 +23,6 @@ class CLCSFast {
 		}
 		
 		public void addNode(int x, int y) {
-			if (x > max[y] || max[y] == -1) {
-				max[y] = x;
-			}
-			if (x < min[y] || min[y] == -1) {
-				min[y] = x;
-			}
 			if (y > maxRow[x] || maxRow[x] == -1) {
 				maxRow[x] = y;
 			}
@@ -45,13 +31,13 @@ class CLCSFast {
 			}
 		}
 		
-		public boolean isBelow(int curr, int x, int y) {
-			return min[y] >= (curr - this.start) + x;
-		}
+		// public boolean isBelow(int curr, int x, int y) {
+		// 	return min[y] >= (curr - this.start) + x;
+		// }
 		
-		public boolean isAbove(int curr, int x, int y) {
-			return max[y] <= (curr - this.start) + x;
-		}
+		// public boolean isAbove(int curr, int x, int y) {
+		// 	return max[y] <= (curr - this.start) + x;
+		// }
 		
 		public int firstInRow(int curr, int x) {
 			if (curr - this.start + x <= 0) {
@@ -83,17 +69,17 @@ class CLCSFast {
 	static int[][] arr;
 	static char[] A, B;
 	static Map<Integer, Path> p;
-	static Map<Integer, Integer> pScore;
+	static int maxScore;
 	
 	private static Path singleShortestPathUnbounded(int mid){
 		int m = A.length, n = B.length;
-		char[][] backtrace = new char[2048][2048];		
-		for (int i = 0; i <= n; i++) {
-			backtrace[0][i] = 'l';
-		}
-		for (int i = 0; i <= m; i++) {
-			backtrace[i][0] = 'u';
-		}
+		char[][] backtrace = new char[m+2][n+2];		
+		// for (int i = 0; i <= n; i++) {
+		// 	backtrace[0][i] = 'l';
+		// }
+		// for (int i = 0; i <= m; i++) {
+		// 	backtrace[i][0] = 'u';
+		// }
 		for (int i = 1; i <= m; i++) {
 			for (int j = 1; j <= n; j++) {	
 				// System.err.println("i " + i);
@@ -114,7 +100,7 @@ class CLCSFast {
 				}
 			}
 		}
-		pScore.put(mid, arr[m][n]);
+		if (arr[m][n] > maxScore) maxScore = arr[m][n];
 		// System.err.println("PUT A SCORE: " + mid);
 		// System.err.println("THE SCORE WAS: " + arr[m][n]);
 		return performBacktrace(backtrace, mid, m, n);
@@ -146,7 +132,7 @@ class CLCSFast {
 				System.err.println("problem");
 				break;
 			}
-			}
+		}
 		
 		
 		
@@ -237,7 +223,7 @@ class CLCSFast {
 		}
 		// System.err.println("putting a score for mid= " + mid);
 		// System.err.println("The score was: " + arr[m][n]);
-		pScore.put(mid, arr[m][n]);
+		if (arr[m][n] > maxScore) maxScore = arr[m][n];
 		// System.err.println("HERE ABOUT TO PERFORM BACKTRACE");
 		return performBacktrace(backtrace, mid, m, n);
 	}
@@ -253,14 +239,14 @@ class CLCSFast {
 		findShortestPaths(mid, upper);
 	}
 	
-	private static void getBestScore(int m) {
-		int max = 0;
-		for (int i = 1; i <= m; i++) {
-			// System.err.println(i);
-			if(pScore.get(i) > max) max = pScore.get(i);
-		}
-		System.out.println(max);
-	}
+	// private static void getBestScore(int m) {
+	// 	int max = 0;
+	// 	for (int i = 1; i <= m; i++) {
+	// 		// System.err.println(i);
+	// 		if(pScore.get(i) > max) max = pScore.get(i);
+	// 	}
+	// 	System.out.println(max);
+	// }
 	
 	// private static void clearTable(int mid, int m, int n, Path upper, Path lower) {
 	// 	for (int i = 1; i <= m; i++) {
@@ -303,15 +289,15 @@ class CLCSFast {
     	for (int tc = 0; tc < T; tc++) {
     		A = s.next().toCharArray();
     	    B = s.next().toCharArray();
-    	    arr = new int[2048][2048];
+    	    arr = new int[A.length+2][B.length+2];
     	    p = new HashMap<Integer,Path>();
-    	    pScore = new HashMap<Integer, Integer>();
+    	    maxScore = 0;
     	    p.put(A.length+1, singleShortestPathUnbounded(A.length+1));
     	    p.put(1, singleShortestPathUnbounded(1));
     	    System.err.println("m " + A.length);
     	    System.err.println("n " + B.length);
     	    findShortestPaths(1, A.length+1);
-    	    getBestScore(A.length);
+    	    System.out.println(maxScore);
     	}
 	}
 	
