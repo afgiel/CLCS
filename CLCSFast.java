@@ -70,10 +70,11 @@ class CLCSFast {
 	static char[] A, B;
 	static Map<Integer, Path> p;
 	static int maxScore;
+	static char[][] backtrace;
 	
 	private static Path singleShortestPathUnbounded(int mid){
 		int m = A.length, n = B.length;
-		char[][] backtrace = new char[m+2][n+2];		
+		//char[][] backtrace = new char[m+2][n+2];		
 		// for (int i = 0; i <= n; i++) {
 		// 	backtrace[0][i] = 'l';
 		// }
@@ -103,10 +104,10 @@ class CLCSFast {
 		if (arr[m][n] > maxScore) maxScore = arr[m][n];
 		// System.err.println("PUT A SCORE: " + mid);
 		// System.err.println("THE SCORE WAS: " + arr[m][n]);
-		return performBacktrace(backtrace, mid, m, n);
+		return performBacktrace(mid, m, n);
 	}
 	
-	private static Path performBacktrace(char[][] backtrace, int mid, int m, int n) {
+	private static Path performBacktrace(int mid, int m, int n) {
 		Path newPath = new Path(mid, m, n);
 		int i = m;
 		int j = n;	
@@ -153,7 +154,7 @@ class CLCSFast {
 		Path upperPath = p.get(upper);
 		Path lowerPath = p.get(lower);
 		int m = A.length, n = B.length;
-		char[][] backtrace = new char[2048][2048];
+		// char[][] backtrace = new char[2048][2048];
 		// for (int i = 0; i <= n; i++) {
 		// 	backtrace[0][i] = 'l';
 		// }
@@ -225,7 +226,7 @@ class CLCSFast {
 		// System.err.println("The score was: " + arr[m][n]);
 		if (arr[m][n] > maxScore) maxScore = arr[m][n];
 		// System.err.println("HERE ABOUT TO PERFORM BACKTRACE");
-		return performBacktrace(backtrace, mid, m, n);
+		return performBacktrace(mid, m, n);
 	}
 	
 	private static void findShortestPaths(int lower, int upper){
@@ -291,6 +292,7 @@ class CLCSFast {
     	    B = s.next().toCharArray();
     	    arr = new int[A.length+2][B.length+2];
     	    p = new HashMap<Integer,Path>();
+    	    backtrace = new char[2048][2048];
     	    maxScore = 0;
     	    p.put(A.length+1, singleShortestPathUnbounded(A.length+1));
     	    p.put(1, singleShortestPathUnbounded(1));
