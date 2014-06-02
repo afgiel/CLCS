@@ -55,7 +55,7 @@ class CLCSFast {
 		
 		public int firstInRow(int curr, int x) {
 			if (curr - this.start + x <= 0) {
-				return 1;
+				return 0;
 			}
 			//  else if (this.start - curr < 0) {
 			// 	System.err.println("BAD FIRST");
@@ -96,27 +96,27 @@ class CLCSFast {
 		}
 		for (int i = 1; i <= m; i++) {
 			for (int j = 1; j <= n; j++) {	
-				System.err.println("i " + i);
-				System.err.println("j " + j);
+				// System.err.println("i " + i);
+				// System.err.println("j " + j);
 				if (arr[i-1][j] > arr[i][j-1]) {
 					arr[i][j] = arr[i-1][j];
 					backtrace[i][j] = 'u';
-					System.err.println("UP");
+					// System.err.println("UP");
 				} else {
 					arr[i][j] = arr[i][j-1];					
 					backtrace[i][j] = 'l';
-					System.err.println("LEFT");
+					// System.err.println("LEFT");
 				}
 				if (A[(i+mid-2)%m] == B[j-1] && arr[i-1][j-1]+1 > arr[i][j]) {
 					arr[i][j] = arr[i-1][j-1]+1;					
 					backtrace[i][j] = 'd';
-					System.err.println("DIAG");
+					// System.err.println("DIAG");
 				}
 			}
 		}
 		pScore.put(mid, arr[m][n]);
-		System.err.println("PUT A SCORE: " + mid);
-		System.err.println("THE SCORE WAS: " + arr[m][n]);
+		// System.err.println("PUT A SCORE: " + mid);
+		// System.err.println("THE SCORE WAS: " + arr[m][n]);
 		return performBacktrace(backtrace, mid, m, n);
 	}
 	
@@ -125,10 +125,10 @@ class CLCSFast {
 		int i = m;
 		int j = n;	
 		char direction = backtrace[m+1][n+1];
-		while(i != 1 || j != 1) {
-			System.err.println("i " + i);
-			System.err.println("j " + j);
-			System.err.println(backtrace[i][j]);
+		while(i > 0 || j > 0) {
+			// System.err.println("i " + i);
+			// System.err.println("j " + j);
+			// System.err.println(backtrace[i][j]);
 			newPath.addNode(i, j);
 			direction = backtrace[i][j];
 			if (direction == 'l') {
@@ -138,22 +138,29 @@ class CLCSFast {
 			} else if (direction == 'd') {
 				i--;
 				j--;
+			} else if (i==0) {
+				j--;
+			} else if (j==0) {
+				i--;
 			} else {
-				System.err.println("BAD SHIT HERE" + i + " " +  j);
+				System.err.println("problem");
 				break;
 			}
-		}
-		if (mid==7) {
-			System.err.println("mid is 7, adding node i=");
-		}
-		newPath.addNode(1, 1);		
+			}
+		
+		
+		
+		// if (mid==7) {
+		// 	System.err.println("mid is 7, adding node i=");
+		// }
+		newPath.addNode(0, 0);		
 		return newPath;
 	}
 
 	private static boolean inBounds(Path upper, Path lower, int mid, int x, int y) {
 		int firstInX = upper.firstInRow(mid, x);
 		int lastInX = lower.lastInRow(mid, x);
-		return x >= 1 && y >= firstInX && y <= lastInX;
+		return x >= 0 && y >= firstInX && y <= lastInX;
 	}
 	
 	private static Path singleShortestPath(int mid, int lower, int upper) {
@@ -161,34 +168,34 @@ class CLCSFast {
 		Path lowerPath = p.get(lower);
 		int m = A.length, n = B.length;
 		char[][] backtrace = new char[2048][2048];
-		for (int i = 0; i <= n; i++) {
-			backtrace[0][i] = 'l';
-		}
-		for (int i = 0; i <= m; i++) {
-			backtrace[i][0] = 'u';
-		}
+		// for (int i = 0; i <= n; i++) {
+		// 	backtrace[0][i] = 'l';
+		// }
+		// for (int i = 0; i <= m; i++) {
+		// 	backtrace[i][0] = 'u';
+		// }
 		clearTable(mid, m, n, upperPath, lowerPath);
 		//System.err.println(arr[mid+1][1]);
 		
 		for (int i = 1; i <= m; i++) {
 			int j = upperPath.firstInRow(mid, i);
 			while (j <= lowerPath.lastInRow(mid, i)) {
-				System.err.println("i " + i);
-				System.err.println("j " + j);
+				// System.err.println("i " + i);
+				// System.err.println("j " + j);
 				if (inBounds(upperPath, lowerPath, mid, i-1, j)) {
 					arr[i][j] = arr[i-1][j];
 					backtrace[i][j] = 'u';
-					System.err.println("UP");
+					// System.err.println("UP");
 				}
 				if (inBounds(upperPath, lowerPath, mid, i, j-1) && arr[i][j-1] >= arr[i-1][j]) {
 					arr[i][j] = arr[i][j-1];
 					backtrace[i][j] = 'l';	
-					System.err.println("LEFT");
+					// System.err.println("LEFT");
 				} 
-				if (A[(i+mid-2)%m] == B[j-1] && inBounds(upperPath, lowerPath, mid, i-1, j-1) && arr[i-1][j-1]+1 > arr[i][j]) {
+				if (inBounds(upperPath, lowerPath, mid, i-1, j-1) && A[(i+mid-2)%m] == B[j-1] && arr[i-1][j-1]+1 > arr[i][j]) {
 					arr[i][j] = arr[i-1][j-1]+1;
 					backtrace[i][j] = 'd';	
-					System.err.println("DIAG");
+					// System.err.println("DIAG");
 				}
 				j++;
 				// System.err.println("i: "  + i);
@@ -215,19 +222,19 @@ class CLCSFast {
 				// j++;
 			}  
 		}
-		System.err.println("putting a score for mid= " + mid);
-		System.err.println("The score was: " + arr[m][n]);
+		// System.err.println("putting a score for mid= " + mid);
+		// System.err.println("The score was: " + arr[m][n]);
 		pScore.put(mid, arr[m][n]);
-		System.err.println("HERE ABOUT TO PERFORM BACKTRACE");
+		// System.err.println("HERE ABOUT TO PERFORM BACKTRACE");
 		return performBacktrace(backtrace, mid, m, n);
 	}
 	
 	private static void findShortestPaths(int lower, int upper){
-		System.err.println("lower " + lower);
-		System.err.println("upper " + upper);
+		// System.err.println("lower " + lower);
+		// System.err.println("upper " + upper);
 		if (upper - lower <= 1) return;
 		int mid = (upper + lower)/2;
-		System.err.println("mid " + mid);
+		// System.err.println("mid " + mid);
 		p.put(mid, singleShortestPath(mid, lower, upper));
 		findShortestPaths(lower, mid);
 		findShortestPaths(mid, upper);
@@ -236,7 +243,7 @@ class CLCSFast {
 	private static void getBestScore(int m) {
 		int max = 0;
 		for (int i = 1; i <= m; i++) {
-			System.err.println(i);
+			// System.err.println(i);
 			if(pScore.get(i) > max) max = pScore.get(i);
 		}
 		System.out.println(max);
