@@ -1,3 +1,9 @@
+//
+// Andrew Giel - agiel - 005718013
+// Hussain Kader - hkader - 005748791
+// Ankit Kumar - ankitk - 005760506
+//
+
 import java.util.*;
 
 class CLCSFast {
